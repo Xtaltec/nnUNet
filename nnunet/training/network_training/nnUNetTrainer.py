@@ -579,7 +579,7 @@ class nnUNetTrainer(NetworkTrainer):
 
         pred_gt_tuples = []
 
-        export_pool = Pool(default_num_threads)
+        #export_pool = Pool(default_num_threads)
         results = []
 
         for k in self.dataset_val.keys():
@@ -619,15 +619,23 @@ class nnUNetTrainer(NetworkTrainer):
                     np.save(join(output_folder, fname + ".npy"), softmax_pred)
                     softmax_pred = join(output_folder, fname + ".npy")
 
-                results.append(export_pool.starmap_async(save_segmentation_nifti_from_softmax,
-                                                         ((softmax_pred, join(output_folder, fname + ".nii.gz"),
+                save_segmentation_nifti_from_softmax(softmax_pred, join(output_folder, fname + ".nii.gz"),
                                                            properties, interpolation_order, self.regions_class_order,
                                                            None, None,
                                                            softmax_fname, None, force_separate_z,
-                                                           interpolation_order_z),
-                                                          )
-                                                         )
-                               )
+                                                           interpolation_order_z)
+
+
+
+                # results.append(export_pool.starmap_async(save_segmentation_nifti_from_softmax,
+                #                                          ((softmax_pred, join(output_folder, fname + ".nii.gz"),
+                #                                            properties, interpolation_order, self.regions_class_order,
+                #                                            None, None,
+                #                                            softmax_fname, None, force_separate_z,
+                #                                            interpolation_order_z),
+                #                                           )
+                #                                          )
+                #                )
 
             pred_gt_tuples.append([join(output_folder, fname + ".nii.gz"),
                                    join(self.gt_niftis_folder, fname + ".nii.gz")])
